@@ -1,16 +1,19 @@
 "use strict";
+const { JWT_SECRET } = process.env;
+const { User } = require('../models')
+import { compareSync, hashSync } from 'bcrypt';
 import { Request, Response, NextFunction } from 'express';
-const { User, Post } = require('../models')
-// const Op          = db.Sequelize.Op;
-// const Bcrypt = require("bcryptjs");
-// const Jwt = require("jsonwebtoken");
+import { Secret, sign } from 'jsonwebtoken';
 
 const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password } = req.body;
     const foundExistingEmail = await User.findOne({ where: { email } })
-    if (foundExistingEmail && foundExistingEmail.password === password) {
-      return res.status(200).json({ status: true, message: "Login Success", data: foundExistingEmail.id });
+    const isPasswordValid = compareSync(password, foundExistingEmail.password);
+    if (foundExistingEmail && isPasswordValid) {
+      const jwtPayload = { id: foundExistingEmail.id, name: foundExistingEmail.name, email }
+      const token = sign(jwtPayload, JWT_SECRET as Secret, { expiresIn: "1d" })
+      return res.status(200).json({ status: true, message: "Login Success", data: foundExistingEmail, token });
     }
     return res.status(200).json({ status: false, message: "Wrong Email/Password", });
   } catch (err) {
@@ -26,7 +29,7 @@ const signUp = async (req: Request, res: Response, next: NextFunction) => {
     if (foundExistingEmail) {
       return res.status(200).json({ status: false, message: "Email already exists", });
     } else {
-      const newUser = await User.create({ name, email, password });
+      const newUser = await User.create({ name, email, password: hashSync(password, 10) });
       return res.status(200).json({
         status: true,
         message: "Sign Up Success",
