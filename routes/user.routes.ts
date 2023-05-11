@@ -1,8 +1,10 @@
 import user from "../controllers/user.controller";
+import { authenticate } from "../middleware/auth";
 const router = require("express").Router();
 
-router.get("/", user.getAll)
-.get("/:id", user.findOne)
+router.get("/", authenticate, user.getAll)
+  .get("/profile", authenticate, user.getMyProfile)
+  .get("/:id", authenticate, user.findOne)
 // .delete("/", user.deleteAll);
 
 // .put("/:id", user.update)
