@@ -11,7 +11,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
     const foundExistingEmail = await User.findOne({ where: { email } })
     const isPasswordValid = compareSync(password, foundExistingEmail.password);
     if (foundExistingEmail && isPasswordValid) {
-      const jwtPayload = { id: foundExistingEmail.id, name: foundExistingEmail.name, email }
+      const jwtPayload = { id: foundExistingEmail.id, name: foundExistingEmail.name, email, role: foundExistingEmail.role }
       const token = sign(jwtPayload, JWT_SECRET as Secret, { expiresIn: "1d" })
       return res.status(200).json({ status: true, message: "Login Success", data: foundExistingEmail, token });
     }

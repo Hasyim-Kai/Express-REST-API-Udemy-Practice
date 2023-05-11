@@ -33,5 +33,19 @@ const findOne = async (req: Request, res: Response) => {
   }
 };
 
+const getMyProfile = async (req: Request, res: Response) => {
+  try {
+    const user = res.locals.user
+    const data = await User.findByPk(user.id);
+    if (data) {
+      return res.status(200).json({ status: true, message: "User Found", data });
+    }
+    return res.status(200).json({ status: true, message: "There is no Registered User" });
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ success: false, error: "Something went wrong", });
+  }
+};
 
-export = { getAll, findOne }
+
+export = { getAll, findOne, getMyProfile }
