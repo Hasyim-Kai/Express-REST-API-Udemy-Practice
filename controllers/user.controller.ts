@@ -1,9 +1,6 @@
 "use strict";
 import { Request, Response, NextFunction } from 'express';
-const { User, Post } = require('../models')
-// const Op          = db.Sequelize.Op;
-// const Bcrypt = require("bcryptjs");
-// const Jwt = require("jsonwebtoken");
+const { User } = require('../models')
 
 const getAll = async (req: Request, res: Response) => {
   try {

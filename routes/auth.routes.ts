@@ -1,8 +1,8 @@
 import auth from "../controllers/auth.controller";
-import authMiddleware from "../middleware/validator";
+import { checkValidationResult, createValidationFor } from "../middleware/validator";
 const router = require("express").Router();
 
 router.post("/login", auth.login)
-.post("/register", authMiddleware.validateRegister, auth.signUp);
+  .post("/register", createValidationFor('register'), checkValidationResult, auth.signUp);
 
 export = router;

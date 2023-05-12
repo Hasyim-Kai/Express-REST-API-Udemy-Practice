@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import morgan from 'morgan';
 const cors = require('cors');
 const express = require('express');
-const createError = require('http-errors');
 
 module.exports = (app: any) => {
 
@@ -11,7 +10,7 @@ module.exports = (app: any) => {
   app.use(express.urlencoded({ extended: true, }));
   app.use(morgan(`dev`));
   app.use((req: Request, res: Response, next: NextFunction) => {
-    console.log(req.body);
+    console.log('from Global Middleware!');
     next();
   });
 
